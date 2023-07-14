@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\PasswordController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -16,3 +17,6 @@ Route::prefix('auth')
 
         Route::get('user', [AuthController::class, 'user']);
 });
+
+Route::post('forgot-password', [PasswordController::class, 'forgot']);
+Route::post('reset-password', [PasswordController::class, 'reset']);

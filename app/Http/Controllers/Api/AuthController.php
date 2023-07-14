@@ -32,7 +32,6 @@ class AuthController extends Controller
 
         if (count($user)) {
             return response()->json([
-                "user" => $user,
                 'status' => 'error',
                 'message' => 'This name or email is already taken'
             ]);
@@ -52,7 +51,7 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'email' => 'required',
+            'email' => 'required|email',
             'password' => 'required'
         ]);
 
