@@ -26,6 +26,18 @@ class AuthController extends Controller
             'password' => 'required|min:8'
         ]);
 
+        $user = User::where('name', $request->name)
+                    ->orWhere('email', $request->email)
+                    ->get();
+
+        if (count($user)) {
+            return response()->json([
+                "user" => $user,
+                'status' => 'error',
+                'message' => 'This name or email is already taken'
+            ]);
+        }
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -49,7 +61,7 @@ class AuthController extends Controller
         if (!auth()->attempt($credentials)) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Login Failed'
+                'message' => 'User not found. Do not have an account? Register!'
             ]);
         }
 
@@ -73,7 +85,6 @@ class AuthController extends Controller
     public function user()
     {
         return response()->json(auth()->user());
-
     }
 
     public function respondWithToken()
@@ -81,7 +92,7 @@ class AuthController extends Controller
         return response()->json([
             'access_token' => auth()->refresh(),
             'type' => 'Bearer',
-            'expires_in' => \Config::get('jwt.ttl')
+            'expires_in' => \Config::get('jwt.ttl') * 60
         ]);
     }
 }
